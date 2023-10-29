@@ -9,8 +9,7 @@
 
 1. Open the app in your browser at `http://localhost:5173`
 2. Enter a search term in the search bar
-3. Click the toggle button to switch between Classic and Urban modes
-4. View the definition(s) for the search term
+3. View the definition(s) for the search term
 
 ## Contributing
 
