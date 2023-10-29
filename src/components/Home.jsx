@@ -5,7 +5,7 @@ export default function Home({ searchTermState, dicTypeState, setShowResult }) {
   const { dicType, setDicType } = dicTypeState;
 
   function toggleDicType() {
-    setDicType((prev) => (prev === "urban"));
+    setDicType((prev) => (prev === "classic" ? "urban" : "classic"));
     setSearchTerm("");
   }
 
