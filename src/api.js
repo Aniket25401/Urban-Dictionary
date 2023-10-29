@@ -15,3 +15,16 @@ export async function getUrbanDictionary(word) {
     	throw new Error('There was an error' + error);
     }
 }
+
+
+export async function getSimpleDictonary(word) {
+    const url = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + word;
+    const options = { method: 'GET'}
+    try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        throw new Error('There was an error');
+    }
+}

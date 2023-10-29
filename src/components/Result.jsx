@@ -1,5 +1,5 @@
 import React from "react";
-import { getUrbanDictionary } from "../api";
+import { getSimpleDictonary, getUrbanDictionary } from "../api";
 import LoadingState from "./Loading";
 
 function Result({ searchTerm, dicType, setShowResult }) {
@@ -9,7 +9,17 @@ function Result({ searchTerm, dicType, setShowResult }) {
   
 
   React.useEffect(() => {
-    if (dicType === "urban") {
+    if (dicType === "classic") {
+      getSimpleDictonary(searchTerm)
+      .then((data) => {
+        setResult(data)
+        setLoading(false)
+      })
+      .catch((err) => {
+        setError(err)
+        setLoading(false);
+      })
+    } else {
       getUrbanDictionary(searchTerm)
       .then((data) => {
         setResult(data)
@@ -25,8 +35,75 @@ function Result({ searchTerm, dicType, setShowResult }) {
 
   let resultScreen;
 
-  if (dicType === "urban")  {
+  if (dicType === "classic")  {
 
+      resultScreen =  result.map((item) => {
+        function playAudio() {
+          const audio = new Audio(item.phonetics[0].audio);
+          audio.play();
+        }
+        return (
+          <>
+            <header className="header classic">
+              <div className="word-cont">
+                <div className="word word-classic">
+                  <h2>{item.word}</h2>
+                  <p>{item.phonetics.map((phonetic) => phonetic.text + ", ")}</p>
+                </div>
+                <div className="audio-cont">
+                  <img src="./speaker.svg" alt="speaker" onClick={playAudio} />
+                </div>
+              </div>
+            </header>
+            <div className="meaning-cont">
+              {item.meanings.map((meaning) => {
+                return (
+                  <div className="meanings">
+                    <aside className="POS-cont">
+                      <h3>{meaning.partOfSpeech}</h3>
+                    </aside>
+                    <div className="definitions">
+                      <ol>
+                        {meaning.definitions.map((definition) => {
+                          return (
+                            <li>
+                              <h3 className="definition">
+                                {definition.definition}
+                              </h3>
+                              {definition?.example || (
+                                <p className="example">{definition.example}</p>
+                              )}
+                            </li>
+                          );
+                        })}
+                      </ol>
+                      <div className="thesauras-cont">
+                        <div>
+                          <h3>ANTONYMS</h3>
+                          <p>
+                            {meaning.antonyms.length > 0
+                              ? meaning.antonyms.map((antonym) => antonym + ", ")
+                              : "No antonyms found"}
+                          </p>
+                        </div>
+                        <div>
+                          <h3>SYNONYMS</h3>
+                          <p>
+                            {meaning.synonyms.length > 0
+                              ? meaning.synonyms.map((synonym) => synonym + ", ")
+                              : "No synonyms found"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        );
+      });
+  } else {
     if(result.length <= 0) {
       resultScreen = <div className="error">No results found</div>
     } else {
@@ -68,7 +145,7 @@ function Result({ searchTerm, dicType, setShowResult }) {
         </>
       );
     });
-    }
+  }
   }
 
   return (
